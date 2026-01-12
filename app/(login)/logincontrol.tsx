@@ -17,11 +17,10 @@ export default function LoginView(props: LoginProps) {
         label="Usuario"
         keyboardType="email-address"
         enterKeyHint="next"
-        placeholder="Escribe tu usuario o correo"
-        placeholderTextColor={"#9b9b9b"}
         textContentType="emailAddress"
         returnKeyType="next"
         value={username}
+        variant="primary"
         onChangeText={(val) => setUsername(val)}
       />
       <Control
@@ -31,16 +30,16 @@ export default function LoginView(props: LoginProps) {
         autoCorrect={false}
         textContentType="password"
         label="Contraseña"
-        enterKeyHint="done"
-        placeholder="Escribe contraseña"
-        placeholderTextColor={"#9b9b9b"}
+        enterKeyHint="send"
+        returnKeyType="send"
         value={password}
+        variant="primary"
         onChangeText={(val) => setPassword(val)}
       />
       <Button
         label="Iniciar sesión"
         className="w-[60%] mt-10 m-auto"
-        color="success"
+        color="primary"
         onPress={() => props.onPress?.({ username, password })}
       />
       <Button

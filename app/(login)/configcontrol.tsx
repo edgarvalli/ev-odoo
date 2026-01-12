@@ -27,10 +27,10 @@ export default function Config(props: IEvents) {
         label="Url Odoo"
         keyboardType="url"
         enterKeyHint="next"
-        placeholder="https://app.odoo.com"
         placeholderTextColor={"#9b9b9b"}
         textContentType="URL"
         value={ODOO_URL}
+        variant="primary"
         onChangeText={(val) => setUrl(val)}
       />
       <Control
@@ -38,9 +38,9 @@ export default function Config(props: IEvents) {
         iconName="dataset"
         label="Base de datos"
         enterKeyHint="done"
-        placeholder="DBName"
         placeholderTextColor={"#9b9b9b"}
         value={ODOO_DB}
+        variant="primary"
         onChangeText={(val) => setDBName(val)}
       />
       <Button

@@ -90,7 +90,7 @@ export default function Login() {
   if (isAuth) return <Redirect href="/dashboard" />;
 
   return (
-    <View className="flex-1 justify-center items-center w-[100%]">
+    <View className="flex-1 justify-center items-center w-[100%] bg-white">
       <Image
         className="mb-10 -mt-20"
         source={Logo}
@@ -102,7 +102,7 @@ export default function Login() {
         className="w-[80%]"
       >
         {initDataSaved ? (
-          <LoginView onPress={(val) => authenticate(val as Cred)} onEditPress={() => setInitData(false)}/>
+          <LoginView onPress={(val) => authenticate(val as Cred)} onEditPress={() => setInitData(false)} />
         ) : (
           <Config onPress={saveData} />
         )}

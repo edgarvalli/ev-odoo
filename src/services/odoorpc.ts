@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Menu, User } from "../types/user";
+import { Menu, User } from "../types/odoo";
 
 export type OdooArgs = {
   service: string;
@@ -65,7 +65,7 @@ export default function odooRPC(url?: string) {
       this.password = password ?? "";
       this.dbname = dbname ?? "";
       this.url = url ?? this.url;
-      this.user = (await this.session() ?? {}) as User;
+      this.user = ((await this.session()) ?? {}) as User;
       return this;
     },
     async common<T>(method: string, args: string[]) {
@@ -84,17 +84,22 @@ export default function odooRPC(url?: string) {
       return odooCall<T>(this.url, params);
     },
     async session() {
-      if(!this.uid)  return null;
+      if (!this.uid) return null;
       const user = await this.read<User[]>("res.users", {
         context: [this.uid],
-        fields: ["name", "email", "image_256", "groups_id"]
-      })
+        fields: ["name", "email", "image_256", "groups_id"],
+      });
 
-      if(!user.result) return null;
+      if (!user.result) return null;
       const _user = user.result[0];
-      const menu = await this.searchRead<Menu>("ir.ui.menu", {});
-      _user.menu = menu.result ?? [] as Menu[]
-      return _user
+      const menu = await this.executeKW<any>([
+        "ir.ui.menu",
+        "load_menus",
+        [[]],
+        {},
+      ]);
+      _user.menu = (menu.result.children as Menu[]) ?? ([] as Menu[]);
+      return _user;
     },
     async login<T>(username: string, password: string) {
       const resp = await this.common<T>("login", [username, password]);
