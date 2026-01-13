@@ -1,12 +1,12 @@
-import { Menu, User } from "@/src/services/odoo";
+import { Menu } from "@/src/services/odoo";
+import { IMenuItem } from "@/src/types/menuItem";
 export type MenuProps = {
   show?: boolean;
   onClose?: () => void;
-  user?: User;
   onItemPress?: (m: Menu) => void;
 };
 
 export interface IMenu {
-  menu: Menu;
-  onItemPress?: (m: Menu) => void;
+  menu: IMenuItem;
+  onItemPress?: (m: IMenuItem) => void;
 }

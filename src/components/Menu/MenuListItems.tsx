@@ -1,14 +1,25 @@
-import Logo from "@/src/assets/images/logo.png";
-import { ReactNode, useEffect, useRef } from "react";
-import { Animated, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import { useAppContext } from "@/src/context/AppContext";
+import { menuItems } from "@/src/data/menu";
+import { IMenuItem } from "@/src/types/menuItem";
+import { ReactNode, useEffect, useRef, useState } from "react";
+import { Animated, FlatList, Text, TouchableOpacity, View } from "react-native";
+import Icon from "../Icon";
 import { IMenu, MenuProps } from "./types";
 
 function MenuListItems(props: MenuProps) {
-    let menuOptions = props.user?.menu ?? [];
+    const item: IMenuItem = {
+        id: 0,
+        name: "home",
+        displayName: "Inicio",
+        icon: "home",
+        url: "/app",
+        bypass: true
+    }
+    const menuOptions = [item, ...Object.values(menuItems)];
     return (
         <FlatList className="mt-4"
             data={menuOptions}
-            keyExtractor={(m, i) => String(m.id ?? i)}
+            keyExtractor={(m, i) => String(m.name ?? i)}
             renderItem={({ item }) => <MenuItem menu={item} onItemPress={() => props.onItemPress?.(item)} />}
         />
     )
@@ -48,15 +59,27 @@ export function AnimateItem({ children, index }: { children?: ReactNode, index?:
 };
 
 export function MenuItem({ menu, onItemPress }: IMenu) {
-    const source = menu.web_icon_data
-        ? { uri: `data:image/png;base64,${menu.web_icon_data}` }
-        : Logo
+    const [allowed, setAllowed] = useState(false);
+    const { odooENV, ready, setCurrentMenuItem } = useAppContext();
+
+    useEffect(() => {
+        if (menu.bypass) return;
+        odooENV.can(menu.name ?? "res.users", "read").then(allow => {
+            setAllowed(allow)
+        })
+    }, [ready])
+
+    if (!allowed && !menu.bypass) return <></>;
+
     return (
         <AnimateItem>
-            <TouchableOpacity onPress={() => onItemPress?.(menu)}>
+            <TouchableOpacity onPress={() => {
+                setCurrentMenuItem?.(menu);
+                onItemPress?.(menu);
+            }}>
                 <View className="p-3 flex flex-row">
-                    <Image className="w-[20px] h-[20px]" source={source} />
-                    <Text className="ms-4">{menu.name}</Text>
+                    <Icon name={menu.icon ?? "home"} type="materialicons" size={18} />
+                    <Text className="ms-4">{menu.displayName}</Text>
                 </View>
             </TouchableOpacity>
         </AnimateItem>

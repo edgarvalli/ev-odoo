@@ -1,15 +1,17 @@
+import { useAppContext } from "@/src/context/AppContext";
 import { Text, TouchableOpacity, View } from "react-native";
 import Avatar from "../Avatar";
 import Icon from "../Icon";
 import { MenuProps } from "./types";
 
 function MenuHeader(props: MenuProps) {
+    const { odooENV } = useAppContext()
     return (
         <>
             <View className="flex flex-row justify-between">
                 <Avatar
                     source={{
-                        uri: `data:image/png;base64,${props.user?.image_256}`,
+                        uri: `data:image/png;base64,${odooENV.user?.image_256}`,
                     }}
                     className="h-[50px] w-[50px]"
                 />
@@ -23,8 +25,8 @@ function MenuHeader(props: MenuProps) {
                 </TouchableOpacity>
             </View>
             <View className="mt-2">
-                <Text className="font-bold text-gray-900">{props.user?.name}</Text>
-                <Text className="text-[12px] text-gray-500">{props.user?.email}</Text>
+                <Text className="font-bold text-gray-900">{odooENV.user?.name}</Text>
+                <Text className="text-[12px] text-gray-500">{odooENV.user?.email}</Text>
             </View>
         </>
     )

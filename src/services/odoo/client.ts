@@ -91,32 +91,7 @@ export function createOdooClient(baseUrl?: string) {
 
       const user = resp.result?.[0] ?? null;
       if (!user) return user;
-
-      const menus = await this.execute<any>("ir.ui.menu", "load_menus", [[]]);
-      const access = await this.execute<any[]>(
-        "ir.model.access",
-        "search_read",
-        [[["group_id", "in", user.groups_id]]],
-        { fields: ["model_id"] }
-      );
-
-      if (access.result) {
-        const modelIds = access.result.map((m) => {
-          return m.model_id[0];
-        });
-
-        const models = await this.execute<any>(
-          "ir.model",
-          "search_read",
-          [[["id", "in", modelIds]]],
-          { fields: ["name", "model", "state"] }
-        );
-
-        Object.assign(user, models);
-      }
-
       await cache.set("odoo.user", user);
-      user.menu = menus.result.children;
       this.user = user;
 
       return user;

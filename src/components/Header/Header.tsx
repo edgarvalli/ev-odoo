@@ -1,29 +1,37 @@
 import { useAppContext } from "@/src/context/AppContext";
 import { useEffect, useState } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import Avatar from "../Avatar";
 import Menu from "../Menu";
 
 export default function Header() {
     const [show, setShow] = useState(false);
 
-    const { odooENV, ready } = useAppContext();
+    const { odooENV, ready, currentMenuItem } = useAppContext();
 
     useEffect(() => {
         odooENV.getUser(true)
     }, [ready])
 
+    useEffect(() => {
+        console.log(currentMenuItem?.displayName + " changed")
+        setShow(false)
+    }, [currentMenuItem])
+
     if (!ready) return <View></View>
 
     return (
-        <View className="p-4">
-            <TouchableOpacity onPress={() => setShow(true)}>
-                <Avatar
-                    source={{ uri: `data:image/png;base64,${odooENV.user.image_256}` }}
-                    className="h-[50px] w-[50px]"
-                />
-            </TouchableOpacity>
-            <Menu show={show} onClose={() => setShow(false)} user={odooENV.user} />
-        </View>
+        <>
+            <View className="flex-row  items-center gap-4  p-4">
+                <TouchableOpacity onPress={() => setShow(true)}>
+                    <Avatar
+                        source={{ uri: `data:image/png;base64,${odooENV.user.image_256}` }}
+                        className="h-[50px] w-[50px]"
+                    />
+                </TouchableOpacity>
+                <Text className="font-bold text-xl w-full text-center pr-[120px]">{currentMenuItem?.displayName}</Text>
+            </View>
+            <Menu show={show} onClose={() => setShow(false)} />
+        </ >
     );
 }

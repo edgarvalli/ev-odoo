@@ -11,7 +11,7 @@ export default function RootLayout() {
         }}
       >
         <Stack.Screen name="(login)" />
-        <Stack.Screen name="(app)" />
+        <Stack.Screen name="app" />
       </Stack>
 
       <StatusBar style="auto" />

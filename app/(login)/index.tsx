@@ -2,7 +2,7 @@ import Logo from "@/src/assets/images/logo.png";
 import { useAppContext } from "@/src/context/AppContext";
 import { AppProviderView } from "@/src/provider/AppProviderView";
 import { enableLayoutAnimationExperimental } from "@/src/tools";
-import { Redirect } from "expo-router";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   Alert,
@@ -62,7 +62,9 @@ export function Login() {
     }
   }, [ready])
 
-  if (isAuth) return <Redirect href="/dashboard" />;
+  useEffect(() => {
+    if (isAuth) return router.replace("/app")
+  }, [isAuth])
 
   return (
     <>
