@@ -1,13 +1,13 @@
 import Logo from "@/src/assets/images/logo.png";
 import { ReactNode, useEffect, useRef } from "react";
 import { Animated, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
-import { MenuProps } from "../Header";
-import { IMenu } from "./types";
+import { IMenu, MenuProps } from "./types";
 
 function MenuListItems(props: MenuProps) {
+    let menuOptions = props.user?.menu ?? [];
     return (
         <FlatList className="mt-4"
-            data={props.user?.menu ?? []}
+            data={menuOptions}
             keyExtractor={(m, i) => String(m.id ?? i)}
             renderItem={({ item }) => <MenuItem menu={item} onItemPress={() => props.onItemPress?.(item)} />}
         />

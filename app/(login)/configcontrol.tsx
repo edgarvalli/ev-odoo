@@ -1,6 +1,6 @@
 import { Button, Control } from "@/src/components";
-import { OdooConfig } from "@/src/types/odoo";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAppContext } from "@/src/context/AppContext";
+import { OdooConfig } from "@/src/services/odoo";
 import { useEffect, useState } from "react";
 import { IEvents } from "./types";
 
@@ -8,11 +8,11 @@ export default function Config(props: IEvents) {
   const [ODOO_URL, setUrl] = useState("");
   const [ODOO_DB, setDBName] = useState("");
 
+  const { odooENV } = useAppContext();
+
   const getInitData = async () => {
-    const url = await AsyncStorage.getItem("ODOO_URL");
-    const dbname = await AsyncStorage.getItem("ODOO_DB");
-    setUrl(url ?? "");
-    setDBName(dbname ?? "");
+    setUrl(odooENV.url ?? "");
+    setDBName(odooENV.db ?? "");
   };
 
   useEffect(() => {

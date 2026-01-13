@@ -1,10 +1,11 @@
 import { Button, Header } from "@/src/components";
+import { AppProviderView } from "@/src/provider/AppProviderView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function Dashboard() {
+export function Dashboard() {
   const logout = async () => {
     AsyncStorage.clear()
     router.navigate("/")
@@ -16,4 +17,12 @@ export default function Dashboard() {
       <Button label="Logout" onPress={logout} />
     </SafeAreaView>
   );
+}
+
+export default function DashboardApp() {
+  return (
+    <AppProviderView>
+      <Dashboard />
+    </AppProviderView>
+  )
 }

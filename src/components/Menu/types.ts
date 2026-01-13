@@ -1,4 +1,4 @@
-import { Menu, User } from "@/src/types/odoo";
+import { Menu, User } from "@/src/services/odoo";
 export type MenuProps = {
   show?: boolean;
   onClose?: () => void;
