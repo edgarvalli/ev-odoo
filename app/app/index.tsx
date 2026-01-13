@@ -4,7 +4,7 @@ import { useAppContext } from "@/src/context/AppContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useEffect, useMemo, useRef } from "react";
-import { Animated, Text } from "react-native";
+import { Animated, Text, View } from "react-native";
 import Partners from "./views/res.partner";
 import Users from "./views/res.users";
 
@@ -21,10 +21,10 @@ function Dashboard() {
     router.replace("/")
   };
   return (
-    <>
+    <View className="flex-1">
       <Text>Dashbord</Text>
       <Button label="Logout" onPress={logout} />
-    </>
+    </View>
   )
 }
 
@@ -48,7 +48,7 @@ function Router() {
   }, [Component])
 
   return (
-    <Animated.View style={{ opacity: fade }}>
+    <Animated.View className="flex-1" style={{ opacity: fade }}>
       <Component />
     </Animated.View>
   )

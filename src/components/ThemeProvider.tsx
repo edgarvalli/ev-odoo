@@ -5,8 +5,8 @@ import Header from "./Header";
 
 export default function ThemeProvider({ children, headerShow = true }: { children: ReactNode, headerShow?: boolean }) {
     return (
-        <AppProviderView>
-            <SafeAreaView>
+        <AppProviderView className="flex-1">
+            <SafeAreaView className="flex-1">
                 {
                     headerShow && <Header />
                 }

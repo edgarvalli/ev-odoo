@@ -1,3 +1,4 @@
+import { Avatar } from "@/src/components";
 import { EVList } from "@/src/components/EVList";
 import { ListItem } from "@/src/components/EVList/ListItem";
 import { useAppContext } from "@/src/context/AppContext";
@@ -23,20 +24,23 @@ export default function Partners() {
 
     return (
         <View className="p-4">
-            <View className="mb-10">
-                <EVList
-                    isLoading={loading}
-                    data={partners}
-                    renderItem={({ item }) => (
-                        <ListItem onPress={() => undefined}>
+            <EVList
+                isLoading={loading}
+                data={partners}
+                renderItem={({ item }) => (
+                    <ListItem onPress={() => undefined}>
+                        <View className="flex-row items-center gap-3">
+                            <Avatar
+                                source={{ uri: `data:image/png;base64,${item.image_256}` }}
+                                style={{ width: 60, height: 60 }} />
                             <View>
                                 <Text className="text-gray-900 font-bold">{item.name}</Text>
                                 <Text className="text-gray-400">{item.email}</Text>
                             </View>
-                        </ListItem>
-                    )}
-                />
-            </View>
+                        </View>
+                    </ListItem>
+                )}
+            />
         </View>
     )
 }

@@ -21,8 +21,8 @@ export default function Header() {
     if (!ready) return <View></View>
 
     return (
-        <>
-            <View className="flex-row  items-center gap-4  p-4">
+        <View>
+            <View className="flex-row items-center gap-4  p-4">
                 <TouchableOpacity onPress={() => setShow(true)}>
                     <Avatar
                         source={{ uri: `data:image/png;base64,${odooENV.user.image_256}` }}
@@ -32,6 +32,6 @@ export default function Header() {
                 <Text className="font-bold text-xl w-full text-center pr-[120px]">{currentMenuItem?.displayName}</Text>
             </View>
             <Menu show={show} onClose={() => setShow(false)} />
-        </ >
+        </View>
     );
 }
