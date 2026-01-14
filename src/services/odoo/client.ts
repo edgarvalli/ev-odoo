@@ -1,6 +1,6 @@
 import { cache } from "./cache";
 import odooCall from "./odooCall";
-import { CRUD, SearchReadParams, User } from "./types";
+import { CRUD, OdooMenu, OdooUser, SearchReadParams } from "./types";
 
 export function createOdooClient(baseUrl?: string) {
   return {
@@ -8,7 +8,7 @@ export function createOdooClient(baseUrl?: string) {
     db: "",
     uid: 0,
     password: "",
-    user: {} as User,
+    user: null as OdooUser | null,
 
     /* ---------------- COMMON ---------------- */
 
@@ -46,7 +46,7 @@ export function createOdooClient(baseUrl?: string) {
         });
       }
 
-      this.user = (await this.getUser()) ?? {};
+      this.user = await this.getUser();
 
       await cache.set("odoo.user", this.user);
 
@@ -77,24 +77,40 @@ export function createOdooClient(baseUrl?: string) {
 
     /* ---------------- USER ---------------- */
 
-    async getUser(force = false): Promise<User | null> {
+    async getUser(force = false): Promise<OdooUser | null> {
       if (!force) {
-        const cached = await cache.get<User>("odoo.user");
+        const cached = await cache.get<OdooUser>("odoo.user");
         if (cached) return cached;
       }
 
       if (!this.uid) return null;
 
-      const resp = await this.execute<User[]>("res.users", "read", [
+      const resp = await this.execute<OdooUser[]>("res.users", "read", [
         [this.uid],
       ]);
 
       const user = resp.result?.[0] ?? null;
       if (!user) return user;
-      await cache.set("odoo.user", user);
       this.user = user;
+      // await this.loadMenuOptions();
 
+      await cache.set("odoo.user", user);
       return user;
+    },
+
+    async loadMenuOptions(): Promise<OdooMenu | null> {
+      if (this.uid === 0 || this.password === "") return null;
+      const resp = await this.execute<OdooMenu | null>(
+        "ir.ui.menu",
+        "load_menus",
+        [[]],
+        {}
+      );
+      if (!resp.result) return null;
+      if (this.user) {
+        this.user.menu = resp.result;
+      }
+      return resp.result;
     },
 
     /* ---------------- PERMISSIONS ---------------- */
@@ -144,6 +160,34 @@ export function createOdooClient(baseUrl?: string) {
 
       if (resp.result) await cache.set(key, resp.result);
       return resp.result;
+    },
+
+    async ref<T = any>(xmlId: string) {
+      const [module, name] = xmlId.split(".");
+      const resp = await this.searchRead<any>("ir.model.data", {
+        domain: [
+          ["module", "=", module],
+          ["name", "=", name],
+        ],
+        fields: ["model", "res_id"],
+        limit: 1,
+      });
+
+      if (!resp.result?.length) return null;
+
+      const { model, res_id } = resp.result[0];
+
+      return {
+        model,
+        id: res_id,
+      } as { model: string; id: number };
+    },
+
+    async refRead<T = any>(xmlId: string, fields?: string[]) {
+      const ref = await this.ref(xmlId);
+      if (!ref) return null;
+      const resp = await this.read<T>(ref.model, [ref.id], fields);
+      return resp.result?.[0] ?? null;
     },
 
     /* ---------------- DATA ---------------- */

@@ -1,12 +1,28 @@
-import { Menu } from "@/src/services/odoo";
-import { IMenuItem } from "@/src/types/menuItem";
+import { OdooMenuItem } from "@/src/services/odoo";
+
 export type MenuProps = {
   show?: boolean;
   onClose?: () => void;
-  onItemPress?: (m: Menu) => void;
+  onItemPress?: (item: MenuItem) => void;
 };
 
 export interface IMenu {
-  menu: IMenuItem;
-  onItemPress?: (m: IMenuItem) => void;
+  data: OdooMenuItem[];
+  onItemPress?: (item: OdooMenuItem) => any;
+  onBackPress?: () => void;
+  level?: number;
+  currentItemId?: number;
 }
+
+export interface MenuItemProps {
+  menu: OdooMenuItem;
+  currentItemId?: number;
+  onItemPress?: (item: OdooMenuItem) => Promise<number | void>;
+}
+
+export type MenuItem = {
+  model: string;
+  icon: string;
+  displayName: string;
+  exclude?: boolean;
+};

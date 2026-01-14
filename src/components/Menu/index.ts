@@ -1,4 +1,4 @@
 export { default } from "./Menu";
 export { default as MenuHeader } from "./MenuHeader";
-export { default as MenuListItems } from "./MenuListItems";
+export { MenuList } from "./MenuList";
 export * from "./types";

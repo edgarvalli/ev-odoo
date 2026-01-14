@@ -7,16 +7,16 @@ import Menu from "../Menu";
 export default function Header() {
     const [show, setShow] = useState(false);
 
-    const { odooENV, ready, currentMenuItem } = useAppContext();
+    const { odooENV, ready, currentMenuOption } = useAppContext();
 
     useEffect(() => {
         odooENV.getUser(true)
     }, [ready])
 
     useEffect(() => {
-        console.log(currentMenuItem?.displayName + " changed")
+        console.log("[This message is in Header component] current action " + currentMenuOption?.displayName)
         setShow(false)
-    }, [currentMenuItem])
+    }, [currentMenuOption])
 
     if (!ready) return <View></View>
 
@@ -25,11 +25,11 @@ export default function Header() {
             <View className="flex-row items-center gap-4  p-4">
                 <TouchableOpacity onPress={() => setShow(true)}>
                     <Avatar
-                        source={{ uri: `data:image/png;base64,${odooENV.user.image_256}` }}
+                        source={{ uri: `data:image/png;base64,${odooENV.user?.image_256}` }}
                         className="h-[50px] w-[50px]"
                     />
                 </TouchableOpacity>
-                <Text className="font-bold text-xl w-full text-center pr-[120px]">{currentMenuItem?.displayName}</Text>
+                <Text className="font-bold text-xl w-full text-center pr-[120px]">{currentMenuOption?.displayName}</Text>
             </View>
             <Menu show={show} onClose={() => setShow(false)} />
         </View>

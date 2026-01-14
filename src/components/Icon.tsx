@@ -4,6 +4,7 @@ import {
   FontAwesome6,
   MaterialIcons,
 } from "@expo/vector-icons";
+import { ColorKey, colors } from "../theme/colors";
 
 export const iconTypes = {
   fontawesome: FontAwesome,
@@ -16,16 +17,17 @@ export type IconProps = {
   type: keyof typeof iconTypes;
   name: string;
   size?: number;
-  color?: string;
+  color?: ColorKey;
   className?: string;
 };
 const Icon = (props: IconProps) => {
   const IconComponent = iconTypes[props.type];
+  const color = props.color && colors[props.color];
   return (
     <IconComponent
       name={props.name}
       size={props.size}
-      color={props.color}
+      color={color?.text}
       className={props.className}
     />
   );

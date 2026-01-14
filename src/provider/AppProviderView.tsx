@@ -1,17 +1,17 @@
 import { AppContext } from "@/src/context/AppContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { View, ViewProps } from "react-native";
+import { MenuItem } from "../components/Menu";
 import { createOdooClient, OdooClient } from "../services/odoo";
-import { IMenuItem } from "../types/menuItem";
 
 export function AppProviderView(props: ViewProps) {
   const [odooENV] = useState<OdooClient>(() => createOdooClient());
-  const [currentMenuItem, setCurrentMenuItemState] =
-    useState<IMenuItem | null>(null);
   const [ready, setReady] = useState(false);
+  const [currentMenuOption, setCurrentMenuOptionState] = useState<MenuItem | null>(null);
 
   useEffect(() => {
     (async () => {
+      if (!odooENV) return;
       await odooENV.init();
 
       const restored = await odooENV.restoreSession();
@@ -30,18 +30,15 @@ export function AppProviderView(props: ViewProps) {
     })();
   }, [odooENV]);
 
-  const setCurrentMenuItem = useCallback((menu: IMenuItem) => {
-    setCurrentMenuItemState(menu);
-  }, []);
-
+  const setCurrentMenuOption = useCallback((item: MenuItem) => setCurrentMenuOptionState(item), [])
   const value = useMemo(
     () => ({
       odooENV,
       ready,
-      currentMenuItem,
-      setCurrentMenuItem,
+      currentMenuOption,
+      setCurrentMenuOptionState,
     }),
-    [odooENV, ready, currentMenuItem, setCurrentMenuItem]
+    [odooENV, ready, currentMenuOption, setCurrentMenuOption]
   );
 
   return (

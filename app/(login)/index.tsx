@@ -1,7 +1,8 @@
 import Logo from "@/src/assets/images/logo.png";
 import { useAppContext } from "@/src/context/AppContext";
 import { AppProviderView } from "@/src/provider/AppProviderView";
-import { enableLayoutAnimationExperimental } from "@/src/tools";
+import { startAuth } from "@/src/services/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -30,37 +31,27 @@ export function Login() {
     setInitData(e);
   };
 
-  const saveData = ({ ODOO_URL, ODOO_DB }: any) => {
+  const saveData = async ({ ODOO_URL, ODOO_DB }: any) => {
     const showAlert = (title: string, msg: string) => Alert.alert(title, msg);
     if (!ODOO_URL) return showAlert("Falta info", "Debe de definir una URL");
     if (!ODOO_DB) return showAlert("Falta Info", "Debe de definir una Base de datos.");
 
-    odooENV.url = ODOO_URL
-    odooENV.db = ODOO_DB
+    await AsyncStorage.setItem("ODOO_URL", ODOO_URL);
+    await AsyncStorage.setItem("ODOO_DB", ODOO_DB);
     toggle(true);
   };
 
   const authenticate = async ({ username, password }: Cred) => {
-    const auth = await odooENV.login(odooENV.db, username, password);
-    if (auth.result) {
-      setAuth(true);
-    }
+    const auth = await startAuth(username, password);
+    setAuth(auth);
   };
 
   useEffect(() => {
     (async () => {
-      if (odooENV) {
-        odooENV.url && setInitData(true);
-      }
-      enableLayoutAnimationExperimental();
+      const url = await AsyncStorage.getItem("ODOO_URL");
+      if (url) setAuth(true);
     })()
-  }, [ready]);
-
-  useEffect(() => {
-    if (odooENV && odooENV.uid) {
-      setAuth(true)
-    }
-  }, [ready])
+  }, [])
 
   useEffect(() => {
     if (isAuth) return router.replace("/app")
